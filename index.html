@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -65,7 +66,7 @@
   .confirm-desc { font-size: 0.9rem; color: var(--gris); margin-bottom: 2.5rem; line-height: 1.7; }
   .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
   .form-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
-  .form-input { font-family: 'Jost', sans-serif; font-size: 0.95rem; font-weight: 300; padding: 0.9rem 1rem; border: 1px solid var(--rosa); background: var(--blanco); color: var(--negro); outline: none; transition: border-color 0.2s; border-radius: 0; }
+  .form-input { font-family: 'Jost', sans-serif; font-size: 0.95rem; font-weight: 300; padding: 0.9rem 1rem; border: 1px solid var(--rosa); background: var(--blanco); color: var(--negro); outline: none; transition: border-color 0.2s; border-radius: 0; width: 100%; }
   .form-input:focus { border-color: var(--rosa-dark); }
   .radio-group { display: flex; gap: 0; border: 1px solid var(--rosa); }
   .radio-option { flex: 1; position: relative; }
@@ -75,10 +76,13 @@
   .radio-option input[type="radio"]:checked + label { background: var(--rosa); color: var(--negro); }
   .btn-confirm { width: 100%; padding: 1.1rem; background: var(--negro); color: var(--blanco); border: none; font-family: 'Jost', sans-serif; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
   .btn-confirm:hover { background: var(--rosa-dark); }
+  .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
   .success-msg { display: none; text-align: center; padding: 3rem; background: var(--rosa-light); border: 1px solid var(--rosa); }
   .success-msg.visible { display: block; }
   .success-msg p { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; font-weight: 300; color: var(--negro); margin-bottom: 0.5rem; }
   .success-msg span { font-size: 0.8rem; color: var(--gris); letter-spacing: 0.1em; }
+  .error-msg { display: none; font-size: 0.8rem; color: var(--rosa-dark); margin-top: 0.75rem; text-align: center; }
+  .error-msg.visible { display: block; }
 
   footer { padding: 3rem 2rem; text-align: center; border-top: 1px solid var(--rosa); }
   .footer-text { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; font-weight: 300; color: var(--gris); }
@@ -172,32 +176,30 @@
   <h2 class="confirm-title fade-up">Confirmá tu<br>asistencia</h2>
   <p class="confirm-desc fade-up">Para poder organizarme bien, confirmame antes del <strong style="font-weight:400; color: var(--negro);">12 de mayo</strong>. ¡Te espero!</p>
 
-</div>
-<form action="https://formspree.io/f/mzdoddwo" method="POST" style="display:flex;flex-direction:column;gap:1.25rem;">
-  <input type="hidden" name="_subject" value="Nueva confirmación — Cumple Trini 🎀">
-  <div class="form-group">
-    <label class="form-label">Tu nombre</label>
-    <input class="form-input" type="text" name="nombre" placeholder="¿Quién sos?" required />
-  </div>
-  <div class="form-group">
-    <label class="form-label">¿Venís?</label>
-    <div class="radio-group">
-      <div class="radio-option">
-        <input type="radio" name="asistencia" id="si" value="Sí, voy">
-        <label for="si">Sí, voy 🎀</label>
-      </div>
-      <div class="radio-option">
-        <input type="radio" name="asistencia" id="no" value="No puedo ir">
-        <label for="no">No puedo ir</label>
+  <div id="form-wrapper" class="fade-up">
+    <div class="form-group">
+      <label class="form-label">Tu nombre</label>
+      <input class="form-input" type="text" id="nombre" placeholder="¿Quién sos?" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">¿Venís?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="asistencia" id="si" value="Sí, voy">
+          <label for="si">Sí, voy 🎀</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="asistencia" id="no" value="No puedo ir">
+          <label for="no">No puedo ir</label>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="form-group">
-    <label class="form-label">¿Algún mensaje? (opcional)</label>
-    <input class="form-input" type="text" name="mensaje" placeholder="Lo que quieras decirme..." />
-  </div>
-  <button type="submit" class="btn-confirm">Confirmar asistencia</button>
-</form>
+    <div class="form-group">
+      <label class="form-label">¿Algún mensaje? (opcional)</label>
+      <input class="form-input" type="text" id="mensaje" placeholder="Lo que quieras decirme..." />
+    </div>
+    <button class="btn-confirm" id="btn-enviar" onclick="confirmar()">Confirmar asistencia</button>
+    <p class="error-msg" id="error-msg">Hubo un problema al enviar. Intentá de nuevo 💕</p>
   </div>
 
   <div class="success-msg" id="success">
@@ -211,15 +213,45 @@
 </footer>
 
 <script>
-  function confirmar() {
+  async function confirmar() {
     const nombre = document.getElementById('nombre').value.trim();
     const asistencia = document.querySelector('input[name="asistencia"]:checked');
+    const mensaje = document.getElementById('mensaje').value.trim();
+    const btn = document.getElementById('btn-enviar');
+    const errorMsg = document.getElementById('error-msg');
+
     if (!nombre || !asistencia) {
       alert('Por favor completá tu nombre e indicá si venís 💕');
       return;
     }
-    document.getElementById('form-wrapper').style.display = 'none';
-    document.getElementById('success').classList.add('visible');
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    errorMsg.classList.remove('visible');
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('asistencia', asistencia.value);
+    formData.append('mensaje', mensaje);
+
+    try {
+      const response = await fetch('TU_LINK_DE_FORMSPREE', {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        document.getElementById('form-wrapper').style.display = 'none';
+        document.getElementById('success').classList.add('visible');
+      } else {
+        throw new Error('Error en el envío');
+      }
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = 'Confirmar asistencia';
+      errorMsg.classList.add('visible');
+    }
   }
 
   const observer = new IntersectionObserver((entries) => {
@@ -232,3 +264,4 @@
 </script>
 </body>
 </html>
+HTMLEOF
