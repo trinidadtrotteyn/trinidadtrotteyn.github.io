@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarde de Té — Trini</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --rosa: #f2c4ce;
+    --rosa-dark: #c97d8e;
+    --rosa-light: #fdf0f3;
+    --beige: #f5f0e8;
+    --negro: #1a1a18;
+    --gris: #6b6b67;
+    --blanco: #fdfcfa;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Jost', sans-serif; background: var(--blanco); color: var(--negro); font-weight: 300; overflow-x: hidden; }
+
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; position: relative; background: var(--rosa-light); text-align: center; }
+  .hero::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: var(--blanco); clip-path: ellipse(60% 100% at 50% 100%); }
+  .hero-eyebrow { font-family: 'Jost', sans-serif; font-weight: 300; font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--rosa-dark); margin-bottom: 2rem; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.2rem, 10vw, 7rem); font-weight: 300; font-style: italic; line-height: 1; color: var(--negro); margin-bottom: 1.5rem; letter-spacing: -0.01em; }
+  .hero-subtitle { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.1rem, 3vw, 1.5rem); font-weight: 300; color: var(--gris); margin-bottom: 3rem; letter-spacing: 0.05em; }
+  .hero-date-pill { display: inline-flex; align-items: center; gap: 1rem; border: 1px solid var(--rosa); padding: 0.75rem 2rem; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--negro); margin-bottom: 3rem; }
+  .hero-scroll { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--rosa-dark); position: absolute; bottom: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; animation: float 2.5s ease-in-out infinite; }
+  .hero-scroll::after { content: ''; display: block; width: 1px; height: 32px; background: var(--rosa); }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+  section { padding: 6rem 2rem; max-width: 720px; margin: 0 auto; }
+  .section-label { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rosa-dark); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rosa); }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rosa); border: 1px solid var(--rosa); margin-bottom: 3rem; }
+  .info-card { background: var(--blanco); padding: 2rem 1.5rem; }
+  .info-card-label { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gris); margin-bottom: 0.75rem; }
+  .info-card-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; line-height: 1.2; color: var(--negro); }
+
+  .menu-section { background: var(--beige); max-width: 100%; padding: 6rem 2rem; }
+  .menu-inner { max-width: 720px; margin: 0 auto; }
+  .menu-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 300; font-style: italic; color: var(--negro); margin-bottom: 3rem; }
+  .menu-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .menu-item { display: flex; align-items: baseline; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid rgba(194, 140, 155, 0.3); font-size: 1rem; color: var(--negro); font-weight: 300; }
+  .menu-item::before { content: '—'; color: var(--rosa-dark); font-size: 0.8rem; flex-shrink: 0; }
+
+  .mapa-container { width: 100%; border: 1px solid var(--rosa); margin-top: 2rem; overflow: hidden; background: var(--beige); }
+  .mapa-placeholder { width: 100%; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; background: var(--beige); }
+  .mapa-icon { width: 40px; height: 40px; }
+  .mapa-link { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rosa-dark); text-decoration: none; border-bottom: 1px solid var(--rosa); padding-bottom: 2px; transition: color 0.2s; }
+  .mapa-link:hover { color: var(--negro); }
+
+  .precio-section { background: var(--negro); max-width: 100%; padding: 6rem 2rem; text-align: center; }
+  .precio-inner { max-width: 720px; margin: 0 auto; }
+  .precio-label-top { font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--rosa); margin-bottom: 2rem; }
+  .precio-number { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 10vw, 6rem); font-weight: 300; color: var(--blanco); line-height: 1; margin-bottom: 0.5rem; }
+  .precio-desc { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 3rem; letter-spacing: 0.1em; }
+  .alias-box { display: inline-flex; flex-direction: column; align-items: center; gap: 0.5rem; border: 1px solid rgba(242, 196, 206, 0.35); padding: 1.5rem 3rem; margin-bottom: 1.5rem; }
+  .alias-label { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+  .alias-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--rosa); letter-spacing: 0.05em; }
+  .precio-nota { font-size: 0.75rem; color: rgba(255,255,255,0.4); letter-spacing: 0.08em; }
+
+  .confirm-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 300; font-style: italic; color: var(--negro); margin-bottom: 0.75rem; }
+  .confirm-desc { font-size: 0.9rem; color: var(--gris); margin-bottom: 2.5rem; line-height: 1.7; }
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .form-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); }
+  .form-input { font-family: 'Jost', sans-serif; font-size: 0.95rem; font-weight: 300; padding: 0.9rem 1rem; border: 1px solid var(--rosa); background: var(--blanco); color: var(--negro); outline: none; transition: border-color 0.2s; border-radius: 0; }
+  .form-input:focus { border-color: var(--rosa-dark); }
+  .radio-group { display: flex; gap: 0; border: 1px solid var(--rosa); }
+  .radio-option { flex: 1; position: relative; }
+  .radio-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
+  .radio-option label { display: flex; align-items: center; justify-content: center; padding: 0.9rem; font-size: 0.85rem; letter-spacing: 0.05em; color: var(--gris); cursor: pointer; transition: all 0.2s; background: var(--blanco); border-right: 1px solid var(--rosa); user-select: none; }
+  .radio-option:last-child label { border-right: none; }
+  .radio-option input[type="radio"]:checked + label { background: var(--rosa); color: var(--negro); }
+  .btn-confirm { width: 100%; padding: 1.1rem; background: var(--negro); color: var(--blanco); border: none; font-family: 'Jost', sans-serif; font-size: 0.75rem; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+  .btn-confirm:hover { background: var(--rosa-dark); }
+  .success-msg { display: none; text-align: center; padding: 3rem; background: var(--rosa-light); border: 1px solid var(--rosa); }
+  .success-msg.visible { display: block; }
+  .success-msg p { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; font-weight: 300; color: var(--negro); margin-bottom: 0.5rem; }
+  .success-msg span { font-size: 0.8rem; color: var(--gris); letter-spacing: 0.1em; }
+
+  footer { padding: 3rem 2rem; text-align: center; border-top: 1px solid var(--rosa); }
+  .footer-text { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; font-weight: 300; color: var(--gris); }
+
+  .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 520px) { .info-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <p class="hero-eyebrow">Una invitación especial</p>
+  <h1 class="hero-title">Festejemos<br>mi cumple</h1>
+  <p class="hero-subtitle">Una tarde de té para celebrar mis 26</p>
+  <div class="hero-date-pill">
+    <span>Sábado 16 de mayo</span>
+    <span style="color: var(--rosa)">·</span>
+    <span>17:30 hs</span>
+  </div>
+  <div class="hero-scroll">bajar</div>
+</div>
+
+<section>
+  <p class="section-label fade-up">Los detalles</p>
+  <div class="info-grid fade-up">
+    <div class="info-card">
+      <p class="info-card-label">Fecha</p>
+      <p class="info-card-value">Sábado<br>16 de mayo</p>
+    </div>
+    <div class="info-card">
+      <p class="info-card-label">Hora</p>
+      <p class="info-card-value">17:30 hs</p>
+    </div>
+    <div class="info-card">
+      <p class="info-card-label">Lugar</p>
+      <p class="info-card-value">DisfruTé</p>
+    </div>
+    <div class="info-card">
+      <p class="info-card-label">Evento</p>
+      <p class="info-card-value">Tarde de<br>té</p>
+    </div>
+  </div>
+
+  <p class="section-label fade-up">Cómo llegar</p>
+  <div class="mapa-container fade-up">
+    <div class="mapa-placeholder">
+      <svg class="mapa-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="17" r="7" stroke="#c97d8e" stroke-width="1.2" fill="none"/>
+        <path d="M20 24 C20 24 11 31 11 37" stroke="#c97d8e" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+        <path d="M20 24 C20 24 29 31 29 37" stroke="#c97d8e" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+        <circle cx="20" cy="17" r="2.5" fill="#c97d8e"/>
+      </svg>
+      <p style="font-size:0.9rem; color: var(--negro); font-family: 'Cormorant Garamond', serif; font-style: italic;">DisfruTé, Mendoza</p>
+      <a class="mapa-link" href="https://maps.app.goo.gl/t2WoXYtB4G9zWrzU8" target="_blank">Ver en Google Maps →</a>
+    </div>
+  </div>
+</section>
+
+<div class="menu-section">
+  <div class="menu-inner">
+    <p class="section-label fade-up">El menú</p>
+    <h2 class="menu-title fade-up">Incluido en<br>la entrada</h2>
+    <ul class="menu-list fade-up">
+      <li class="menu-item">Infusiones</li>
+      <li class="menu-item">Limonada</li>
+      <li class="menu-item">Sandwich de miga</li>
+      <li class="menu-item">Pancito de jamón crudo y rúcula</li>
+      <li class="menu-item">Alfajor de maicena</li>
+      <li class="menu-item">Minitarta dulce</li>
+    </ul>
+  </div>
+</div>
+
+<div class="precio-section">
+  <div class="precio-inner">
+    <p class="precio-label-top fade-up">Entrada</p>
+    <p class="precio-number fade-up">$10.900</p>
+    <p class="precio-desc fade-up">por persona · todo incluido</p>
+    <div class="alias-box fade-up">
+      <span class="alias-label">Transferir al alias</span>
+      <span class="alias-value">TRINIMALEN</span>
+    </div>
+    <p class="precio-nota fade-up">Enviá el comprobante por privado ✦ Tiempo límite: 12 de mayo</p>
+  </div>
+</div>
+
+<section>
+  <p class="section-label fade-up">¿Venís?</p>
+  <h2 class="confirm-title fade-up">Confirmá tu<br>asistencia</h2>
+  <p class="confirm-desc fade-up">Para poder organizarme bien, confirmame antes del <strong style="font-weight:400; color: var(--negro);">12 de mayo</strong>. ¡Te espero!</p>
+
+  <div id="form-wrapper" class="fade-up">
+    <div class="form-group">
+      <label class="form-label">Tu nombre</label>
+      <input class="form-input" type="text" id="nombre" placeholder="¿Quién sos?" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">¿Venís?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="asistencia" id="si" value="si">
+          <label for="si">Sí, voy 🎀</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="asistencia" id="no" value="no">
+          <label for="no">No puedo ir</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">¿Algún mensaje? (opcional)</label>
+      <input class="form-input" type="text" id="mensaje" placeholder="Lo que quieras decirme..." />
+    </div>
+    <button class="btn-confirm" onclick="confirmar()">Confirmar asistencia</button>
+  </div>
+
+  <div class="success-msg" id="success">
+    <p>¡Perfecto! Anotado ✦</p>
+    <span>Ya sé que contamos contigo. ¡Hasta el 16! 🌸</span>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-text">Con amor, Trini ✦</p>
+</footer>
+
+<script>
+  function confirmar() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const asistencia = document.querySelector('input[name="asistencia"]:checked');
+    if (!nombre || !asistencia) {
+      alert('Por favor completá tu nombre e indicá si venís 💕');
+      return;
+    }
+    document.getElementById('form-wrapper').style.display = 'none';
+    document.getElementById('success').classList.add('visible');
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
