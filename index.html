@@ -194,7 +194,31 @@
       <label class="form-label">¿Algún mensaje? (opcional)</label>
       <input class="form-input" type="text" id="mensaje" placeholder="Lo que quieras decirme..." />
     </div>
-    <button class="btn-confirm" onclick="confirmar()">Confirmar asistencia</button>
+<form action="https://formspree.io/f/mzdoddwo" method="POST" style="display:flex;flex-direction:column;gap:1.25rem;">
+  <input type="hidden" name="_subject" value="Nueva confirmación — Cumple Trini 🎀">
+  <div class="form-group">
+    <label class="form-label">Tu nombre</label>
+    <input class="form-input" type="text" name="nombre" placeholder="¿Quién sos?" required />
+  </div>
+  <div class="form-group">
+    <label class="form-label">¿Venís?</label>
+    <div class="radio-group">
+      <div class="radio-option">
+        <input type="radio" name="asistencia" id="si" value="Sí, voy">
+        <label for="si">Sí, voy 🎀</label>
+      </div>
+      <div class="radio-option">
+        <input type="radio" name="asistencia" id="no" value="No puedo ir">
+        <label for="no">No puedo ir</label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">¿Algún mensaje? (opcional)</label>
+    <input class="form-input" type="text" name="mensaje" placeholder="Lo que quieras decirme..." />
+  </div>
+  <button type="submit" class="btn-confirm">Confirmar asistencia</button>
+</form>
   </div>
 
   <div class="success-msg" id="success">
